@@ -53,9 +53,69 @@ namespace Relations
             {
                 HelpText = "Мне серьёзно придётся объяснять это?... \nСинтаксис: /sex <игрок>",
                 AllowServer = false
+            },
+            new Command(PluginPermissions.marriage, MarriageCommand, "marriage", "managemarriages")
+            {
+                HelpText = "Женись на зуме без его согласия.\nПодкоманды: \n/marriage -del <имя> - удаление свадьбы в базе данных\n/marriage -ins <имя> <имя2> - создание свадьбы двух игроков\n/marriage -list - вывод всех свадьб в базе данных",
+                AllowServer = false
             }
         };
         #endregion
+
+        public static void MarriageCommand(CommandArgs args)
+        {
+            var par = args.Parameters;
+
+            if(par.Count > 0)
+            {
+                switch(par[0]) 
+                {
+                    case "-del":
+
+                        if(par.Count > 1)
+                        {
+                            if (Exists(par[1]))
+                            {
+                                args.Player.SendSuccessMessage("Вы удалили свадьбы игрока " + par[1]);
+                                DeleteMarriage(par[1]);
+                            }
+                        }
+                        else
+                        {
+                            args.Player.SendErrorMessage("Неверный синтаксис.");
+                        }
+                        break;
+
+                    case "-ins":
+                        if(par.Count > 2)
+                        {
+                            if (!Exists(par[2]) && !Exists(par[1]))
+                            {
+                                CreateMarriage(par[1], par[2]);
+                                CreateMarriage(par[2], par[1]);
+                                args.Player.SendSuccessMessage($"Вы создали свадьбы между игроками ({par[1]}, {par[2]}");
+                            }
+                            else
+                            {
+                                args.Player.SendErrorMessage("Один из игроков уже был женат.");
+                            }
+                        }
+                        else
+                        {
+                            args.Player.SendErrorMessage("Неверный синтаксис.");
+                        }
+                        break;
+
+                    case "-list":
+                        args.Player.SendInfoMessage(GetAllMarriages());
+                        break;
+                }
+            }
+            else
+            {
+                args.Player.SendErrorMessage("Неверный синтаксис.");
+            }
+        }
 
         public static void KissCommand(CommandArgs args)
         {
@@ -231,37 +291,43 @@ namespace Relations
 
                                 if (plr2.HasPermission("relations.date"))
                                 {
-
-                                    try
+                                    if (plr2.Name != args.Player.Name)
                                     {
-                                        Warp warp = TShock.Warps.Find(parameter[1]);
-                                        datewarps[args.Player.Index] = warp.Name;
-                                        datewarps[plr2.Index] = warp.Name;
-                                    }
-                                    catch
-                                    {
-                                        args.Player.SendErrorMessage("Варп не найден. \nДля полного листа варпов пропишите /warp list");
-                                        return;
-                                    }
 
-                                    RelationsPlugin.daterequests[plr2.Index] = args.Player.Name;
-                                    RelationsPlugin.daterequests[args.Player.Index] = plr2.Name + " ⌇";
+                                        try
+                                        {
+                                            Warp warp = TShock.Warps.Find(parameter[1]);
+                                            datewarps[args.Player.Index] = warp.Name;
+                                            datewarps[plr2.Index] = warp.Name;
+                                        }
+                                        catch
+                                        {
+                                            args.Player.SendErrorMessage("Варп не найден. \nДля полного листа варпов пропишите /warp list");
+                                            return;
+                                        }
+
+                                        RelationsPlugin.daterequests[plr2.Index] = args.Player.Name;
+                                        RelationsPlugin.daterequests[args.Player.Index] = plr2.Name + " ⌇";
 
 
-                                    args.Player.SendInfoMessage(plr2.Name + " был приглашён на свидание.\nЧтобы отменить запрос пропишите /date -cancel");
+                                        args.Player.SendInfoMessage(plr2.Name + " был приглашён на свидание.\nЧтобы отменить запрос пропишите /date -cancel");
 
-                                    if (Main.LocalPlayer.Male)
-                                    {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласил " + plr2.Name + " на свидание!");
+                                        if (Main.LocalPlayer.Male)
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласил " + plr2.Name + " на свидание!");
 
+                                        }
+                                        else
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласила " + plr2.Name + " на свидание!");
+                                        }
+                                        plr2.SendInfoMessage("Чтобы принять запрос на свидание пропишите /date -confirm");
+                                        plr2.SendInfoMessage("Чтобы отклонить запрос на свидание пропишите /date -reject");
                                     }
                                     else
                                     {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласила " + plr2.Name + " на свидание!");
+                                        args.Player.SendErrorMessage("Ты любишь целовать мальчиков, не так ли?");
                                     }
-                                    plr2.SendInfoMessage("Чтобы принять запрос на свидание пропишите /date -confirm");
-                                    plr2.SendInfoMessage("Чтобы отклонить запрос на свидание пропишите /date -reject");
-
                                 }
                                 else
                                 {
@@ -296,7 +362,8 @@ namespace Relations
                     args.Player.SendSuccessMessage("Вы ушли от " + plrN + ".");
 
                     SaveMarriage(args.Player.Name, string.Empty);
-                    CreateMarriage(plrN, string.Empty);
+                    SaveMarriage(plrN, string.Empty);
+                    
 
                     if (plrs.Count > 0)
                     {
