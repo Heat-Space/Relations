@@ -198,7 +198,7 @@ namespace Relations
 
         public static void DeleteMarriage(string nickname)
         {
-            DB.Query("DELETE * FROM Marriages WHERE Nickname=@0 OR Nickname2=@0", nickname);
+            DB.Query("DELETE FROM Marriages WHERE Nickname=@0 OR Nickname2=@0", nickname);
         }
         #endregion
     }

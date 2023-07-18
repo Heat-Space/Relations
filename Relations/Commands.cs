@@ -76,8 +76,8 @@ namespace Relations
                         {
                             if (Exists(par[1]))
                             {
-                                args.Player.SendSuccessMessage("Вы удалили свадьбы игрока " + par[1]);
                                 DeleteMarriage(par[1]);
+                                args.Player.SendSuccessMessage("Вы удалили свадьбы игрока " + par[1]);
                             }
                         }
                         else
