@@ -20,7 +20,7 @@ namespace Relations
         public override string Name => "Relations";
         public RelationsPlugin(Main game) : base(game) { }
 
-        public override Version Version => new Version(1, 3, 0);
+        public override Version Version => new Version(1, 4, 0);
 
         #endregion
 
@@ -29,6 +29,8 @@ namespace Relations
 
         public static string?[] daterequests = new string?[Main.maxPlayers];
         public static string?[] datewarps = new string?[Main.maxPlayers];
+
+        public static bool[] useable = new bool[Main.maxPlayers];
 
         public static IDbConnection DB;
 
@@ -41,6 +43,8 @@ namespace Relations
             Commands.ChatCommands.AddRange(PluginCommands.commands);
 
             ServerApi.Hooks.ServerLeave.Register(this, OnLeave);
+            ServerApi.Hooks.ServerJoin.Register(this, OnJoin);
+
             InitailizeBD();
         }
         #endregion
@@ -52,6 +56,11 @@ namespace Relations
             requests[args.Who] = null;
             daterequests[args.Who] = null;
             datewarps[args.Who] = null;
+            useable[args.Who] = true;
+        }
+        void OnJoin(JoinEventArgs args)
+        {
+            useable[args.Who] = true;
         }
         #endregion
         #endregion

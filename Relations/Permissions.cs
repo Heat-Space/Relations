@@ -17,5 +17,7 @@ namespace Relations
         public static readonly string date = "relation.date";
         public static readonly string sex = "relation.nsfw.sex";
         public static readonly string marriage = "relation.manage.marriages";
+        public static readonly string rallow = "relation.rallow";
+        public static readonly string hug = "relation.hug";
     }
 }

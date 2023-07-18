@@ -56,11 +56,70 @@ namespace Relations
             },
             new Command(PluginPermissions.marriage, MarriageCommand, "marriage", "managemarriages")
             {
-                HelpText = "Женись на зуме без его согласия.\nПодкоманды: \n/marriage -del <имя> - удаление свадьбы в базе данных\n/marriage -ins <имя> <имя2> - создание свадьбы двух игроков\n/marriage -list - вывод всех свадьб в базе данных",
+                HelpText = "Женись на зуме без его согласия.\nПодкоманды: \n/marriage -del <имя> - удаление свадьбы в базе данных\n/marriage -ins <имя> <имя2> - создание свадьбы двух игроков\n/marriage -list - вывод всех свадьб в базе данных"
+            },
+            new Command(PluginPermissions.rallow, RelationsAllowCommand, "rallow", "relationsallow")
+            {
+                HelpText = "Разрешает или запрещает использовать команды плагина на отношения на вас.",
                 AllowServer = false
+            },
+            new Command(PluginPermissions.hug, HugCommand, "hug")
+            {
+                HelpText = "Обнимаффффки! \nСинтаксис: /hug <игрок>"
             }
         };
         #endregion
+
+        public static void HugCommand(CommandArgs args)
+        {
+            var parameter = args.Parameters;
+
+            if (parameter.Count > 0)
+            {
+                var plrs = TSPlayer.FindByNameOrID(args.Parameters[0]);
+
+                if (plrs.Count > 1)
+                {
+                    args.Player.SendMultipleMatchError(plrs.Select(p => p.Name));
+                }
+                else if (plrs.Count == 0)
+                {
+                    args.Player.SendErrorMessage("Такого игрока нет на сервере.");
+                }
+                else
+                {
+                    var plr = plrs[0];
+                    if (useable[plr.Index])
+                    {
+                        args.Player.SendSuccessMessage("Вы обняли " + plr.Name + ".");
+                        TSPlayer.All.SendInfoMessage(args.Player.Name + " обнял игрока " + plr.Name);
+
+                        plr.SetBuff(2);
+                        plr.SetBuff(124);
+                        args.Player.SetBuff(124);
+                    }
+                    else
+                    {
+                        
+                            args.Player.SendErrorMessage("Данный игрок защищён от команд.");
+                        
+                    }
+                }
+            }
+        }
+
+        public static void RelationsAllowCommand(CommandArgs args)
+        {
+            useable[args.Player.Index] = !useable[args.Player.Index];
+            if (useable[args.Player.Index])
+            {
+                TSPlayer.All.SendInfoMessage(args.Player.Name + " снова беззащитен!");
+            }
+            else
+            {
+                TSPlayer.All.SendInfoMessage(args.Player.Name + " защищён от злых команд!");
+            }
+        }
 
         public static void MarriageCommand(CommandArgs args)
         {
@@ -136,19 +195,28 @@ namespace Relations
                 else
                 {
                     var plr = plrs[0];
-
-                    args.Player.SendSuccessMessage("Вы поцеловали " + plr.Name + ".");
-
-                    TSPlayer.All.SendInfoMessage(args.Player.Name + " поцеловал игрока " + plr.Name);
-                    if (Main.LocalPlayer.Male)
+                    if (useable[plr.Index])
                     {
-                        plr.SendInfoMessage("Кажется, " + args.Player.Name + " в вас влюблён!");
+
+
+
+                        args.Player.SendSuccessMessage("Вы поцеловали " + plr.Name + ".");
+
+                        TSPlayer.All.SendInfoMessage(args.Player.Name + " поцеловал игрока " + plr.Name);
+                        if (Main.LocalPlayer.Male)
+                        {
+                            plr.SendInfoMessage("Кажется, " + args.Player.Name + " в вас влюблён!");
+                        }
+                        else
+                        {
+                            plr.SendInfoMessage("Кажется, " + args.Player.Name + " в вас влюблена!");
+                        }
+                        plr.SetBuff(119, 500);
                     }
                     else
                     {
-                        plr.SendInfoMessage("Кажется, " + args.Player.Name + " в вас влюблена!");
+                        args.Player.SendErrorMessage("Данный игрок защищён от команд.");
                     }
-                    plr.SetBuff(119, 500);
                 }
             }
             else
@@ -289,7 +357,7 @@ namespace Relations
                             {
                                 var plr2 = plrs3[0];
 
-                                if (plr2.HasPermission("relations.date"))
+                                if (plr2.HasPermission("relations.date") && useable[plr2.Index])
                                 {
                                     if (plr2.Name != args.Player.Name)
                                     {
@@ -414,7 +482,8 @@ namespace Relations
                 else
                 {
                     var plr = plrs[0];
-                    if (Exists(plr.Name))
+                    
+                    if (Exists(plr.Name) && useable[plr.Index])
                     {
                         var nickname = GetMarried2(plr.Name);
 
@@ -480,25 +549,28 @@ namespace Relations
                         TSPlayer.All.SendMessage("Sticker крутой!", Color.Crimson);
                     }
                     var plr = plrs[0];
-
-
-
-                    plr.SetBuff(103, 240);
-                    plr.DamagePlayer(5);
-
-                    args.Player.SendSuccessMessage("Вы шлёпнули " + plr.Name + ".");
-
-                    if (Main.LocalPlayer.Male)
+                    if (useable[plr.Index])
                     {
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнул игрока " + plr.Name);
-                        plr.SendMessage(args.Player.Name + " шлёпнул вас ~", Color.Pink);
+                        plr.SetBuff(103, 240);
+                        plr.DamagePlayer(5);
+
+                        args.Player.SendSuccessMessage("Вы шлёпнули " + plr.Name + ".");
+
+                        if (Main.LocalPlayer.Male)
+                        {
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнул игрока " + plr.Name);
+                            plr.SendMessage(args.Player.Name + " шлёпнул вас ~", Color.Pink);
+                        }
+                        else
+                        {
+                            plr.SendMessage(args.Player.Name + " шлёпнула вас ~", Color.Pink);
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнула игрока " + plr.Name);
+                        }
                     }
                     else
                     {
-                        plr.SendMessage(args.Player.Name + " шлёпнула вас ~", Color.Pink);
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнула игрока " + plr.Name);
+                        args.Player.SendErrorMessage("Данный игрок защищён от команд.");
                     }
-
                 }
             }
             else
@@ -527,20 +599,25 @@ namespace Relations
                 else
                 {
                     var plr = plrs[0];
-
-                    args.Player.SendSuccessMessage("Вы погладили " + plr.Name + ".");
-
-                    if (Main.LocalPlayer.Male)
+                    if (useable[plr.Index])
                     {
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " погладил игрока " + plr.Name);
-                        plr.SendMessage(args.Player.Name + " погладил вас по голове ~", Color.HotPink);
+                        args.Player.SendSuccessMessage("Вы погладили " + plr.Name + ".");
+
+                        if (Main.LocalPlayer.Male)
+                        {
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " погладил игрока " + plr.Name);
+                            plr.SendMessage(args.Player.Name + " погладил вас по голове ~", Color.HotPink);
+                        }
+                        else
+                        {
+                            plr.SendMessage(args.Player.Name + " погладила вас по голове ~", Color.HotPink);
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " погладила игрока " + plr.Name);
+                        }
                     }
                     else
                     {
-                        plr.SendMessage(args.Player.Name + " погладила вас по голове ~", Color.HotPink);
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " погладила игрока " + plr.Name);
+                        args.Player.SendErrorMessage("Данный игрок защищён от команд.");
                     }
-
                 }
             }
             else
@@ -567,22 +644,28 @@ namespace Relations
                 else
                 {
                     var plr = plrs[0];
-
-                    plr.SetBuff(31, 240);
-                    plr.DamagePlayer(plr.TPlayer.statLifeMax / 4);
-
-                    args.Player.SendSuccessMessage("Вы ударили " + plr.Name + "!");
-
-                    if (Main.LocalPlayer.Male)
+                    if (useable[plr.Index])
                     {
-                        plr.SendMessage(args.Player.Name + " ударил вас! Об отношениях не может быть и речи...", Color.Red);
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " ударил " + plr.Name);
+                        plr.SetBuff(31, 240);
+                        plr.DamagePlayer(plr.TPlayer.statLifeMax / 4);
+
+                        args.Player.SendSuccessMessage("Вы ударили " + plr.Name + "!");
+
+                        if (Main.LocalPlayer.Male)
+                        {
+                            plr.SendMessage(args.Player.Name + " ударил вас! Об отношениях не может быть и речи...", Color.Red);
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " ударил " + plr.Name);
+                        }
+                        else
+                        {
+                            plr.SendMessage(args.Player.Name + " ударила вас! Об отношениях не может быть и речи...", Color.Red);
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " ударила " + plr.Name);
+                        }
                     }
                     else
                     {
-                        plr.SendMessage(args.Player.Name + " ударила вас! Об отношениях не может быть и речи...", Color.Red);
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " ударила " + plr.Name);
-                    }
+                        args.Player.SendErrorMessage("Данный игрок защищён от команд.");
+                    } 
                 }
             }
             else
@@ -781,7 +864,7 @@ namespace Relations
                             if (RelationsPlugin.requests[args.Player.Index] == null)
                             {
                                 var plr = plrs3[0];
-                                if (plr.IsLoggedIn && plr.HasPermission("relations.marry"))
+                                if (plr.IsLoggedIn && plr.HasPermission("relations.marry") && useable[plr.Index])
                                 {
                                     if (plr.Name != args.Player.Name)
                                     {
