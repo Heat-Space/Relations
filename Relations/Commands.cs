@@ -18,7 +18,7 @@ namespace Relations
         {
             // Would be glad to get some translations from u guys :D
 
-            new Command(PluginPermissions.kiss, KissCommand, "love")
+            new Command(PluginPermissions.kiss, KissCommand, "love", "kiss")
             {
                 HelpText = "Поцелуй кое-кого особенного ~ \nСинтаксис: /love <игрок>"
             },
