@@ -25,6 +25,9 @@ Relations is a TShock plugin that adds various (cringy) RP commands.
 * /rallow (Defend yourself from all those commands)
 
 ## Aliases
+* /rallow, /relationsallow
+* /marriage, /managemarriages
+
 
 ## TODO
 * Add documentation, etc.
