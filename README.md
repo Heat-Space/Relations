@@ -5,7 +5,8 @@ Relations is a TShock plugin that adds various (cringy) RP commands.
 
 ## Table of contents
 * [Commands](#commands)
-* [TODO](#todo)
+* [Command Aliases](#aliases)
+* [TODOs](#todo)
 
 ## Commands
 * /love username (Kiss)
@@ -17,9 +18,13 @@ Relations is a TShock plugin that adds various (cringy) RP commands.
   * /marry -info username(opt.) (Checks if a user is married)
 * /divorce
 * /pat username
+* /hug username
 * /beat username
 * /date username
 * /sex username (WTFFFFF)
+* /rallow (Defend yourself from all those commands)
+
+## Aliases
 
 ## TODO
 * Add documentation, etc.
