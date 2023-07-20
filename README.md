@@ -23,6 +23,10 @@ Relations is a TShock plugin that adds various (cringy) RP commands.
 * /date username
 * /sex username (WTFFFFF)
 * /rallow (Defend yourself from all those commands)
+* /marriage commands:
+ * /marriage -del username (Deletes a marriage in a database)
+ * /marriage -ins username username2 (Saves a marriage between two users)
+ * /marriage -list
 
 ## Aliases
 * /rallow, /relationsallow
