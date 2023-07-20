@@ -166,7 +166,10 @@ namespace Relations
                         break;
 
                     case "-list":
-                        args.Player.SendInfoMessage(GetAllMarriages());
+                        foreach(Marry m in GetAllMarriages())
+                        {
+                            args.Player.SendInfoMessage(m.Nickname1 + " || " + m.Nickname2);
+                        }
                         break;
                 }
             }

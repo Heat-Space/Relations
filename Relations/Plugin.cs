@@ -9,6 +9,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using Microsoft.Data.Sqlite;
 using TShockAPI.DB;
+using System.Collections.Generic;
 
 namespace Relations
 {
@@ -20,7 +21,7 @@ namespace Relations
         public override string Name => "Relations";
         public RelationsPlugin(Main game) : base(game) { }
 
-        public override Version Version => new Version(1, 4, 0);
+        public override Version Version => new Version(1, 4, 1);
 
         #endregion
 
@@ -66,6 +67,17 @@ namespace Relations
         #endregion
 
         #region BD
+
+        public struct Marry
+        {
+            public Marry(string p1, string p2)
+            {
+                Nickname1 = p1;
+                Nickname2 = p2;
+            }
+            public string Nickname1;
+            public string Nickname2;
+        }
         internal static void InitailizeBD()
         {
             IQueryBuilder builder = null;
@@ -180,29 +192,26 @@ namespace Relations
             DB.Query("UPDATE Marriages SET Nickname2 = @1 WHERE Nickname = @0", playerName, playerName2);
         }
 
-        public static string GetAllMarriages()
+        public static List<Marry> GetAllMarriages()
         {
+            List<Marry> result = new();
             string nickname2 = string.Empty;
             string nickname = string.Empty;
 
             using (var reader = DB.QueryReader("SELECT * FROM Marriages"))
             {
-                if (reader.Read())
+                while (reader.Read())
                 {
-                    nickname2 = reader.Get<string>("Nickname2");
-                    nickname = reader.Get<string>("Nickname");
+                    nickname2 = reader.Get<string>("Nickname2"); 
                     if(nickname2 == string.Empty)
                     {
                         nickname2 = "NONE";
                     }
-                }
-                else
-                {
-                    nickname2 = string.Empty;
-                    nickname = string.Empty;
+                    nickname = reader.Get<string>("Nickname");
+                    result.Add(new Marry(nickname, nickname2));
                 }
             }
-            return nickname + " || " + nickname2 + "\n";
+            return result;
         }
 
         public static void DeleteMarriage(string nickname)
