@@ -20,15 +20,15 @@ namespace Relations
 
             new Command(PluginPermissions.kiss, KissCommand, "love", "kiss")
             {
-                HelpText = "Поцелуй кое-кого особенного ~ \nСинтаксис: /love <игрок>"
+                HelpText = "Поцелуй кое-кого особенного ~ \nСинтаксис: /love <игрок>\nВы можете использовать . вместо / чтобы бесшумно использовать команду."
             },
             new Command(PluginPermissions.plunk, SlapCommand, "plunk")
             {
-                HelpText = "Шлёпни кое-кого особенного ~ \nСинтаксис: /plunk <игрок>"
+                HelpText = "Шлёпни кое-кого особенного ~ \nСинтаксис: /plunk <игрок>\nВы можете использовать . вместо / чтобы бесшумно использовать команду."
             },
             new Command(PluginPermissions.marry, MarryCommand, "marry")
             {
-                HelpText = "Свадьба! \n/marry <игрок> - запрос на свадьбу с игроком. \nПодкоманды:\n/marry -confirm - принятие заявки на свадьбу. \n/marry -reject - отклонение заявки на свадьбу.",
+                HelpText = "Свадьба! \n/marry <игрок> - запрос на свадьбу с игроком. \nПодкоманды:\n/marry -confirm - принятие заявки на свадьбу. \n/marry -reject - отклонение заявки на свадьбу.\nВы можете использовать . вместо / чтобы бесшумно использовать команду.",
                 AllowServer = false
             },
             new Command(PluginPermissions.divorce, DivorceCommand, "divorce")
@@ -38,21 +38,19 @@ namespace Relations
             },
             new Command(PluginPermissions.pat, PatCommand, "pat")
             {
-                HelpText = "Гладь кого хочешь ~ \nСинтаксис: /pat <игрок>"
+                HelpText = "Гладь кого хочешь ~ \nСинтаксис: /pat <игрок>\nВы можете использовать . вместо / чтобы бесшумно использовать команду."
             },
             new Command(PluginPermissions.beat, BeatCommand, "beat")
             {
-                HelpText = "Домашнее насилие - норма! \nСинтаксис: /beat <игрок>"
+                HelpText = "Домашнее насилие - норма! \nСинтаксис: /beat <игрок>\nВы можете использовать . вместо / чтобы бесшумно использовать команду."
             },
             new Command(PluginPermissions.date, DateCommand, "date")
             {
-                HelpText = "Пригласите любого игрока на свидание :D \n/date <игрок> <варп> - запрос на свидание с игроком в определённом месте\nПодкоманды:\n/date -confirm - принятие заявки на свидание\n/date -reject - отклонение заявки на свидание. ",
-                AllowServer = false
+                HelpText = "Пригласите любого игрока на свидание :D \n/date <игрок> <варп> - запрос на свидание с игроком в определённом месте\nПодкоманды:\n/date -confirm - принятие заявки на свидание\n/date -reject - отклонение заявки на свидание.\nВы можете использовать . вместо / чтобы бесшумно использовать команду."
             },
             new Command(PluginPermissions.sex, NSFWCommand_1, "sex", "fuck")
             {
-                HelpText = "Мне серьёзно придётся объяснять это?... \nСинтаксис: /sex <игрок>",
-                AllowServer = false
+                HelpText = "Мне серьёзно придётся объяснять это?... \nСинтаксис: /sex <игрок>"
             },
             new Command(PluginPermissions.marriage, MarriageCommand, "marriage", "managemarriages")
             {
@@ -60,12 +58,12 @@ namespace Relations
             },
             new Command(PluginPermissions.rallow, RelationsAllowCommand, "rallow", "relationsallow")
             {
-                HelpText = "Разрешает или запрещает использовать команды плагина на отношения на вас.",
+                HelpText = "Разрешает или запрещает использовать команды плагина на отношения на вас.\nВы можете использовать . вместо / чтобы бесшумно использовать команду.",
                 AllowServer = false
             },
             new Command(PluginPermissions.hug, HugCommand, "hug")
             {
-                HelpText = "Обнимаффффки! \nСинтаксис: /hug <игрок>"
+                HelpText = "Обнимаффффки! \nСинтаксис: /hug <игрок>\nВы можете использовать . вместо / чтобы бесшумно использовать команду."
             }
         };
         #endregion
@@ -92,7 +90,12 @@ namespace Relations
                     if (useable[plr.Index])
                     {
                         args.Player.SendSuccessMessage("Вы обняли " + plr.Name + ".");
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " обнял игрока " + plr.Name);
+                        if (!args.Silent)
+                        {
+
+
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " обнял игрока " + plr.Name);
+                        }
 
                         plr.SetBuff(2);
                         plr.SetBuff(124);
@@ -100,9 +103,9 @@ namespace Relations
                     }
                     else
                     {
-                        
-                            args.Player.SendErrorMessage("Данный игрок защищён от команд.");
-                        
+
+                        args.Player.SendErrorMessage("Данный игрок защищён от команд.");
+
                     }
                 }
             }
@@ -111,13 +114,18 @@ namespace Relations
         public static void RelationsAllowCommand(CommandArgs args)
         {
             useable[args.Player.Index] = !useable[args.Player.Index];
-            if (useable[args.Player.Index])
+            if (!args.Silent)
             {
-                TSPlayer.All.SendInfoMessage(args.Player.Name + " снова беззащитен!");
-            }
-            else
-            {
-                TSPlayer.All.SendInfoMessage(args.Player.Name + " защищён от злых команд!");
+
+
+                if (useable[args.Player.Index])
+                {
+                    TSPlayer.All.SendInfoMessage(args.Player.Name + " снова беззащитен!");
+                }
+                else
+                {
+                    TSPlayer.All.SendInfoMessage(args.Player.Name + " защищён от злых команд!");
+                }
             }
         }
 
@@ -125,18 +133,24 @@ namespace Relations
         {
             var par = args.Parameters;
 
-            if(par.Count > 0)
+            if (par.Count > 0)
             {
-                switch(par[0]) 
+                switch (par[0])
                 {
                     case "-del":
 
-                        if(par.Count > 1)
+                        if (par.Count > 1)
                         {
+                            var n = GetMarried(par[1]);
                             if (Exists(par[1]))
                             {
                                 DeleteMarriage(par[1]);
                                 args.Player.SendSuccessMessage("Вы удалили свадьбы игрока " + par[1]);
+                            }
+                            if (Exists(n))
+                            {
+                                DeleteMarriage(n);
+                                args.Player.SendSuccessMessage("Вы удалили свадьбы игрока " + n);
                             }
                         }
                         else
@@ -146,17 +160,17 @@ namespace Relations
                         break;
 
                     case "-ins":
-                        if(par.Count > 2)
+                        if (par.Count > 2)
                         {
                             if (!Exists(par[2]) && !Exists(par[1]))
                             {
                                 CreateMarriage(par[1], par[2]);
                                 CreateMarriage(par[2], par[1]);
-                                args.Player.SendSuccessMessage($"Вы создали свадьбы между игроками ({par[1]}, {par[2]}");
+                                args.Player.SendSuccessMessage($"Вы создали свадьбы между игроками ({par[1]}, {par[2]})");
                             }
                             else
                             {
-                                args.Player.SendErrorMessage("Один из игроков уже был женат.");
+                                args.Player.SendErrorMessage("Один из игроков уже женат.");
                             }
                         }
                         else
@@ -166,9 +180,29 @@ namespace Relations
                         break;
 
                     case "-list":
-                        foreach(Marry m in GetAllMarriages())
+                        foreach (Marry m in GetAllMarriages())
                         {
                             args.Player.SendInfoMessage(m.Nickname1 + " || " + m.Nickname2);
+
+                        }
+                        break;
+
+                    case "-upd":
+                        if (par.Count > 1)
+                        {
+                            if (Exists(par[0]))
+                            {
+                                SaveMarriage(par[0], par[1]);
+                                args.Player.SendInfoMessage($"{par[0]} теперь женат(а) на {par[1]}");
+                            }
+                            else
+                            {
+                                args.Player.SendErrorMessage("Свадьба не найдена сорян");
+                            }
+                        }
+                        else
+                        {
+                            args.Player.SendErrorMessage("Неверный синтаксис.");
                         }
                         break;
                 }
@@ -204,8 +238,11 @@ namespace Relations
 
 
                         args.Player.SendSuccessMessage("Вы поцеловали " + plr.Name + ".");
+                        if (!args.Silent)
+                        {
+                            TSPlayer.All.SendInfoMessage(args.Player.Name + " поцеловал игрока " + plr.Name);
+                        }
 
-                        TSPlayer.All.SendInfoMessage(args.Player.Name + " поцеловал игрока " + plr.Name);
                         if (Main.LocalPlayer.Male)
                         {
                             plr.SendInfoMessage("Кажется, " + args.Player.Name + " в вас влюблён!");
@@ -276,12 +313,22 @@ namespace Relations
                                     if (Main.LocalPlayer.Male)
                                     {
                                         plr.SendInfoMessage(args.Player.Name + " пришел на ваше свидание!");
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " принял заявку " + plr.Name + " на свидание!");
+                                        if (!args.Silent)
+                                        {
+
+
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " принял заявку " + plr.Name + " на свидание!");
+                                        }
                                     }
                                     else
                                     {
                                         plr.SendInfoMessage(args.Player.Name + " пришла на ваше свидание!");
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " приняла заявку " + plr.Name + " на свидание!");
+                                        if (!args.Silent)
+                                        {
+
+
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " приняла заявку " + plr.Name + " на свидание!");
+                                        }
                                     }
 
                                     Warp warpB = TShock.Warps.Find(datewarps[args.Player.Index]);
@@ -318,13 +365,16 @@ namespace Relations
 
                                 if (RelationsPlugin.daterequests[args.Player.Index] == plr.Name && RelationsPlugin.daterequests[plr.Index] == args.Player.Name + " ⌇")
                                 {
-                                    if (Main.LocalPlayer.Male)
+                                    if (!args.Silent)
                                     {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонил заявку " + plr.Name + " на свидание :(");
-                                    }
-                                    else
-                                    {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонила заявку " + plr.Name + " на свидание :(");
+                                        if (Main.LocalPlayer.Male)
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонил заявку " + plr.Name + " на свидание :(");
+                                        }
+                                        else
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонила заявку " + plr.Name + " на свидание :(");
+                                        }
                                     }
                                     RelationsPlugin.daterequests[plr.Index] = null;
                                     RelationsPlugin.daterequests[args.Player.Index] = null;
@@ -362,7 +412,7 @@ namespace Relations
 
                                 if (plr2.HasPermission("relations.date") && useable[plr2.Index])
                                 {
-                                    if (plr2.Name != args.Player.Name)
+                                    if (plr2.Name != args.Player.Name || args.Player == TSPlayer.Server)
                                     {
 
                                         try
@@ -383,14 +433,19 @@ namespace Relations
 
                                         args.Player.SendInfoMessage(plr2.Name + " был приглашён на свидание.\nЧтобы отменить запрос пропишите /date -cancel");
 
-                                        if (Main.LocalPlayer.Male)
+                                        if (!args.Silent)
                                         {
-                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласил " + plr2.Name + " на свидание!");
 
-                                        }
-                                        else
-                                        {
-                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласила " + plr2.Name + " на свидание!");
+
+                                            if (Main.LocalPlayer.Male)
+                                            {
+                                                TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласил " + plr2.Name + " на свидание!");
+
+                                            }
+                                            else
+                                            {
+                                                TSPlayer.All.SendInfoMessage(args.Player.Name + " пригласила " + plr2.Name + " на свидание!");
+                                            }
                                         }
                                         plr2.SendInfoMessage("Чтобы принять запрос на свидание пропишите /date -confirm");
                                         plr2.SendInfoMessage("Чтобы отклонить запрос на свидание пропишите /date -reject");
@@ -426,15 +481,15 @@ namespace Relations
             if (Exists(args.Player.Name))
             {
                 var plrN = GetMarried(args.Player.Name);
-                if (plrN != string.Empty)
+                if (!string.IsNullOrEmpty(plrN))
                 {
                     var plrs = TSPlayer.FindByNameOrID(plrN);
 
                     args.Player.SendSuccessMessage("Вы ушли от " + plrN + ".");
 
-                    SaveMarriage(args.Player.Name, string.Empty);
-                    SaveMarriage(plrN, string.Empty);
-                    
+                    DeleteMarriage(args.Player.Name);
+                    DeleteMarriage(plrN);
+
 
                     if (plrs.Count > 0)
                     {
@@ -485,41 +540,32 @@ namespace Relations
                 else
                 {
                     var plr = plrs[0];
-                    
-                    if (Exists(plr.Name) && useable[plr.Index])
+
+                    if (useable[plr.Index])
                     {
-                        var nickname = GetMarried2(plr.Name);
 
-                        if (nickname == args.Player.Name)
+
+                        args.Player.SendSuccessMessage("Вы.. аэм.. занялись половым размножением с... " + plr.Name + "...");
+
+
+                        plr.SetBuff(119, 500);
+
+                        args.Player.SetBuff(169, 500);
+                        args.Player.SetBuff(119, 500);
+
+                        if (Main.LocalPlayer.Male)
                         {
-                            args.Player.SendSuccessMessage("Вы.. аэм.. занялись половым размножением с... " + plr.Name + "...");
-
-                            plr.SetBuff(119, 500);
-                            plr.SetBuff(169, 500);
-                            args.Player.SetBuff(169, 500);
-                            args.Player.SetBuff(119, 500);
-
-                            if (Main.LocalPlayer.Male)
-                            {
-                                plr.SendInfoMessage(string.Format("{0} занялся с вами половым размножением...?", args.Player.Name));
-                            }
-                            else
-                            {
-                                plr.SendInfoMessage(string.Format("{0} занялась с вами половым размножением...?", args.Player.Name));
-                            }
+                            plr.SendInfoMessage(string.Format("{0} занялся с вами половым размножением...?", args.Player.Name));
                         }
                         else
                         {
-                            args.Player.SendErrorMessage("Я знаю где ты живешь...");
-
+                            plr.SendInfoMessage(string.Format("{0} занялась с вами половым размножением...?", args.Player.Name));
                         }
-
-
 
                     }
                     else
                     {
-                        args.Player.SendErrorMessage("Я знаю где ты живешь...");
+                        args.Player.SendErrorMessage($"{plr.IP}");
                     }
 
                 }
@@ -561,13 +607,23 @@ namespace Relations
 
                         if (Main.LocalPlayer.Male)
                         {
-                            TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнул игрока " + plr.Name);
+                            if (!args.Silent)
+                            {
+
+
+                                TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнул игрока " + plr.Name);
+                            }
                             plr.SendMessage(args.Player.Name + " шлёпнул вас ~", Color.Pink);
                         }
                         else
                         {
                             plr.SendMessage(args.Player.Name + " шлёпнула вас ~", Color.Pink);
-                            TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнула игрока " + plr.Name);
+                            if (!args.Silent)
+                            {
+
+
+                                TSPlayer.All.SendInfoMessage(args.Player.Name + " шлёпнула игрока " + plr.Name);
+                            }
                         }
                     }
                     else
@@ -608,13 +664,23 @@ namespace Relations
 
                         if (Main.LocalPlayer.Male)
                         {
-                            TSPlayer.All.SendInfoMessage(args.Player.Name + " погладил игрока " + plr.Name);
+                            if (!args.Silent)
+                            {
+
+
+                                TSPlayer.All.SendInfoMessage(args.Player.Name + " погладил игрока " + plr.Name);
+                            }
                             plr.SendMessage(args.Player.Name + " погладил вас по голове ~", Color.HotPink);
                         }
                         else
                         {
                             plr.SendMessage(args.Player.Name + " погладила вас по голове ~", Color.HotPink);
-                            TSPlayer.All.SendInfoMessage(args.Player.Name + " погладила игрока " + plr.Name);
+                            if (!args.Silent)
+                            {
+
+
+                                TSPlayer.All.SendInfoMessage(args.Player.Name + " погладила игрока " + plr.Name);
+                            }
                         }
                     }
                     else
@@ -657,18 +723,28 @@ namespace Relations
                         if (Main.LocalPlayer.Male)
                         {
                             plr.SendMessage(args.Player.Name + " ударил вас! Об отношениях не может быть и речи...", Color.Red);
-                            TSPlayer.All.SendInfoMessage(args.Player.Name + " ударил " + plr.Name);
+                            if (!args.Silent)
+                            {
+
+
+                                TSPlayer.All.SendInfoMessage(args.Player.Name + " ударил " + plr.Name);
+                            }
                         }
                         else
                         {
                             plr.SendMessage(args.Player.Name + " ударила вас! Об отношениях не может быть и речи...", Color.Red);
-                            TSPlayer.All.SendInfoMessage(args.Player.Name + " ударила " + plr.Name);
+                            if (!args.Silent)
+                            {
+
+
+                                TSPlayer.All.SendInfoMessage(args.Player.Name + " ударила " + plr.Name);
+                            }
                         }
                     }
                     else
                     {
                         args.Player.SendErrorMessage("Данный игрок защищён от команд.");
-                    } 
+                    }
                 }
             }
             else
@@ -697,8 +773,12 @@ namespace Relations
                                 {
                                     RelationsPlugin.requests[args.Player.Index] = null;
                                     RelationsPlugin.requests[plr.Index] = null;
+                                    if (!args.Silent)
+                                    {
 
-                                    TSPlayer.All.SendInfoMessage("Заявка на свадьбу игрока " + args.Player.Name + " была отменена.");
+
+                                        TSPlayer.All.SendInfoMessage("Заявка на свадьбу игрока " + args.Player.Name + " была отменена.");
+                                    }
                                     args.Player.SendSuccessMessage("Вы отменили свадьбу.");
 
                                 }
@@ -726,13 +806,18 @@ namespace Relations
 
                                     args.Player.SendSuccessMessage("Вы отклонили заявку игрока " + plr.Name + " на свадьбу.");
 
-                                    if (Main.LocalPlayer.Male)
+                                    if (!args.Silent)
                                     {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонил заявку " + plr.Name + " на свадьбу :(");
-                                    }
-                                    else
-                                    {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонила заявку " + plr.Name + " на свадьбу :(");
+
+
+                                        if (Main.LocalPlayer.Male)
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонил заявку " + plr.Name + " на свадьбу :(");
+                                        }
+                                        else
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " отклонила заявку " + plr.Name + " на свадьбу :(");
+                                        }
                                     }
                                 }
                             }
@@ -783,13 +868,18 @@ namespace Relations
 
                                     args.Player.SendInfoMessage("Теперь вы женаты на " + plr.Name + ".");
 
-                                    if (Main.LocalPlayer.Male)
+                                    if (!args.Silent)
                                     {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " теперь женат на " + plr.Name + "!");
-                                    }
-                                    else
-                                    {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " теперь жената на " + plr.Name + "!");
+
+
+                                        if (Main.LocalPlayer.Male)
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " теперь женат на " + plr.Name + "!");
+                                        }
+                                        else
+                                        {
+                                            TSPlayer.All.SendInfoMessage(args.Player.Name + " теперь жената на " + plr.Name + "!");
+                                        }
                                     }
                                 }
                             }
@@ -867,31 +957,42 @@ namespace Relations
                             if (RelationsPlugin.requests[args.Player.Index] == null)
                             {
                                 var plr = plrs3[0];
-                                if (plr.IsLoggedIn && plr.HasPermission("relations.marry") && useable[plr.Index])
+                                if (!Exists(args.Player.Name))
                                 {
-                                    if (plr.Name != args.Player.Name)
+                                    if (plr.IsLoggedIn && plr.HasPermission("relations.marry") && useable[plr.Index])
                                     {
-                                        TSPlayer.All.SendInfoMessage(args.Player.Name + " хочет жениться на " + plr.Name);
-                                        plr.SendInfoMessage("Чтобы принять предложение, пропишите /marry -confirm");
-                                        plr.SendInfoMessage("Чтобы отклонить предложение, пропишите /marry -reject");
+                                        if (plr.Name != args.Player.Name)
+                                        {
+                                            if (!args.Silent)
+                                            {
+                                                TSPlayer.All.SendInfoMessage(args.Player.Name + " хочет жениться на " + plr.Name);
+                                            }
+                                            plr.SendInfoMessage("Чтобы принять предложение, пропишите /marry -confirm");
+                                            plr.SendInfoMessage("Чтобы отклонить предложение, пропишите /marry -reject");
 
-                                        args.Player.SendInfoMessage("Чтобы отменить запрос пропишите /marry -cancel");
+                                            args.Player.SendInfoMessage("Чтобы отменить запрос пропишите /marry -cancel");
 
 
-                                        RelationsPlugin.requests[plr.Index] = args.Player.Name;
-                                        RelationsPlugin.requests[args.Player.Index] = plr.Name + " ⌇";
+                                            RelationsPlugin.requests[plr.Index] = args.Player.Name;
+                                            RelationsPlugin.requests[args.Player.Index] = plr.Name + " ⌇";
+                                        }
+                                        else
+                                        {
+                                            args.Player.SendErrorMessage("Ты чо на себе хочешь жениться нарциссист хренов??");
+                                        }
                                     }
                                     else
                                     {
-                                        args.Player.SendErrorMessage("Ты чо на себе хочешь жениться нарциссист хренов??");
+                                        args.Player.SendErrorMessage("Данный игрок не может жениться.");
                                     }
+
                                 }
                                 else
                                 {
-                                    args.Player.SendErrorMessage("Данный игрок не может жениться.");
+                                    args.Player.SendInfoMessage("Вы уже женаты.");
                                 }
-
                             }
+
                             else
                             {
                                 args.Player.SendErrorMessage("Вы уже подали заявку на свадьбу или не приняли существующую.");

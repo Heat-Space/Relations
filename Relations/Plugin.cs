@@ -21,7 +21,7 @@ namespace Relations
         public override string Name => "Relations";
         public RelationsPlugin(Main game) : base(game) { }
 
-        public override Version Version => new Version(1, 4, 1);
+        public override Version Version => new Version(1, 4, 2);
 
         #endregion
 
@@ -200,14 +200,22 @@ namespace Relations
 
             using (var reader = DB.QueryReader("SELECT * FROM Marriages"))
             {
+                
                 while (reader.Read())
                 {
                     nickname2 = reader.Get<string>("Nickname2"); 
-                    if(nickname2 == string.Empty)
+                    if(nickname2 == string.Empty || nickname2 == "NONE")
                     {
-                        nickname2 = "NONE";
+                        DeleteMarriage(nickname);
                     }
                     nickname = reader.Get<string>("Nickname");
+                    foreach (Marry marry in result)
+                    {
+                        if(nickname == marry.Nickname1 || nickname == marry.Nickname2)
+                        {
+                            break;
+                        }
+                    }
                     result.Add(new Marry(nickname, nickname2));
                 }
             }
@@ -218,6 +226,11 @@ namespace Relations
         {
             DB.Query("DELETE FROM Marriages WHERE Nickname=@0 OR Nickname2=@0", nickname);
         }
+        public static void ClearMarriages()
+        {
+            DB.Query("DELETE * FROM Marriages");
+        }
+
         #endregion
     }
 }
