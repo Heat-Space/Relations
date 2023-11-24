@@ -205,6 +205,11 @@ namespace Relations
                             args.Player.SendErrorMessage("Неверный синтаксис.");
                         }
                         break;
+
+                    case "-clear":
+                        args.Player.SendInfoMessage("F");
+                        ClearMarriages();
+                        break;
                 }
             }
             else
