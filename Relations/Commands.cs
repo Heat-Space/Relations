@@ -546,31 +546,33 @@ namespace Relations
                 {
                     var plr = plrs[0];
 
-                    if (useable[plr.Index])
+                    if (useable[plr.Index] && Exists(plr.Name))
                     {
 
-
-                        args.Player.SendSuccessMessage("Вы.. аэм.. занялись половым размножением с... " + plr.Name + "...");
-
-
-                        plr.SetBuff(119, 500);
-
-                        args.Player.SetBuff(169, 500);
-                        args.Player.SetBuff(119, 500);
-
-                        if (Main.LocalPlayer.Male)
+                        if (GetMarried2(plr.Name) == args.Player.Name)
                         {
-                            plr.SendInfoMessage(string.Format("{0} занялся с вами половым размножением...?", args.Player.Name));
-                        }
-                        else
-                        {
-                            plr.SendInfoMessage(string.Format("{0} занялась с вами половым размножением...?", args.Player.Name));
-                        }
 
+                            args.Player.SendSuccessMessage("Вы.. аэм.. занялись половым размножением с... " + plr.Name + "...");
+
+
+                            plr.SetBuff(119, 500);
+
+                            args.Player.SetBuff(169, 500);
+                            args.Player.SetBuff(119, 500);
+
+                            if (Main.LocalPlayer.Male)
+                            {
+                                plr.SendInfoMessage(string.Format("{0} занялся с вами половым размножением...?", args.Player.Name));
+                            }
+                            else
+                            {
+                                plr.SendInfoMessage(string.Format("{0} занялась с вами половым размножением...?", args.Player.Name));
+                            }
+                        }
                     }
                     else
                     {
-                        args.Player.SendErrorMessage($"{plr.IP}");
+                        args.Player.SendErrorMessage($"Фу.");
                     }
 
                 }
