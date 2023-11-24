@@ -21,7 +21,7 @@ namespace Relations
         public override string Name => "Relations";
         public RelationsPlugin(Main game) : base(game) { }
 
-        public override Version Version => new Version(1, 4, 2);
+        public override Version Version => new Version(1, 5, 0);
 
         #endregion
 
